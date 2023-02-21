@@ -1,0 +1,16 @@
+digraph test_graph{
+e[ label="ENTREE" shape=none]
+s[ label="SORTIE" shape=none]
+0 [label="0"]
+1 [label="1"]
+2 [label="2"];
+e -> 0  ;
+0 -> 0 [label="a" color=grey81 ] 
+0 -> 1 [label="b" color=grey81 ] 
+0 -> s ;
+0 -> 2 [label="c" color=grey81 ] 
+1 -> s ;
+1 -> 2 [label="v" color=grey81 ] 
+2 -> s ;
+2 -> 1 [label="c" color=grey81 ] 
+2 -> 2 [label="d" color=grey81 ] }

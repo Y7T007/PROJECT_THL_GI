@@ -1,0 +1,12 @@
+digraph test_graph{
+
+0 [label="0"]
+1 [label="1"]
+2 [label="2"];
+0 -> 0 [headlabel="a" labeldistance=2.0 labelangle=-40 ] 
+1 -> 0 [headlabel="f" labeldistance=2.0 labelangle=-40 ] 
+0 -> 1 [headlabel="b" labeldistance=2.0 labelangle=-40 ] 
+2 -> 1 [headlabel="g" labeldistance=2.0 labelangle=-40 ] 
+0 -> 2 [headlabel="+" labeldistance=2.0 labelangle=-40 ] 
+1 -> 2 [headlabel="f" labeldistance=2.0 labelangle=-40 ] 
+2 -> 2 [headlabel="g" labeldistance=2.0 labelangle=-40 ] }

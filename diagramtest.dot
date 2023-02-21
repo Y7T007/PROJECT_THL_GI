@@ -1,0 +1,9 @@
+digraph diagram{
+
+0 [label="0"]
+1 [label="1"];
+0 -> 0 [headlabel="a" labeldistance=2.0 labelangle=-40 ] 
+1 -> 0 [headlabel="b" labeldistance=2.0 labelangle=-40 ] 
+0 -> 1 [headlabel="c" labeldistance=2.0 labelangle=-40 ] 
+1 -> 1 [headlabel="d" labeldistance=2.0 labelangle=-40 ]
+}

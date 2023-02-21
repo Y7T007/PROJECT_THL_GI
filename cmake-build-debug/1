@@ -1,0 +1,3 @@
+digraph test_graph{
+e[ label="" shape=none]
+s[ label="" shape=none];}
