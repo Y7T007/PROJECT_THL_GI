@@ -71,7 +71,7 @@ struct automates creer_dot_fichier(struct automates automates_1,FILE *ptr){
         }
     fprintf(ptr,"}");
 }
-struct automates struct_to_file(char rw,struct automates automate_1 ,FILE *ptr){
+struct automates creer_fichier_texte(char rw,struct automates automate_1 ,FILE *ptr){
 
     if( rw == 'w' ){
 
@@ -99,7 +99,7 @@ struct automates struct_to_file(char rw,struct automates automate_1 ,FILE *ptr){
     }
 
 }
-struct automates read_only_function(char rw,FILE *ptr){
+struct automates lire_fichier_texte(char rw,FILE *ptr){
     struct automates automate_1;
     if(rw =='r'){
 
@@ -121,8 +121,8 @@ struct automates read_only_function(char rw,FILE *ptr){
         }
         int temp;
         for (int i = 0; i<j-2 ; ++i) {
-            if((data[i][4])>=97 && (data[i][4])<=122){
-                automate_1.transitions[data[i][2]-48][data[i][0]-48]=(data[i][4]);
+            if(((data[i][4])>=97 && (data[i][4])<=122)|| (data[i][4])==45  ){
+                automate_1.transitions[data[i][0]-48][data[i][2]-48]=(data[i][4]);
 
             }
         }
@@ -189,7 +189,7 @@ int main() {
         obj1=remplissage_automate();
 
 //        ENSUITE EN UTILISANT CETTE FONCTION QUI ECRIT NOTRE AUTOMATE SUR LE FICHIER.TXT
-        struct_to_file('w',obj1,ptr2);
+        creer_fichier_texte('w',obj1,ptr2);
 //         DE MEME ON PROCEDE POUR LA CREATION DU FICHIER .DOT
         printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
         char fich_dot[50];
@@ -202,17 +202,17 @@ int main() {
         creer_dot_fichier(obj1,ptr1);
     }
     if(reponse=='o'){
-        printf("VEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT L\'AUTOMATE : ");
+        printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT L\'AUTOMATE : ");
         char chemin[70];
         scanf("%s",&chemin);
         struct automates obj2;
 
         FILE *ptr3;
         ptr3 = fopen( chemin,"r");
-        obj2= read_only_function('r',ptr3);
+        obj2= lire_fichier_texte('r',ptr3);
 
-        struct_to_file( 'r',obj2,ptr3);
-        printf("\n\nCONGRATULAAAAATIIOOOOOOOONNNNNNN !!!!!!!!!!!!!!!!! OOOOH MYY GOOOOD U HAVE OPENED THE FIIIIILE SUCCESSSEEEEEFULLYYYYYYY \n YAAAAAAAAY!!!!!!!!\n");
+        creer_fichier_texte( 'r',obj2,ptr3);
+        printf("\n\nL'OUVERTURE DU FICHIER A REUSSI AVEC SUCCES\n");
         for (int i = 0; i < obj2.nombre_d_etat; ++i) {
             for (int j = 0; j < obj2.nombre_d_etat; ++j) {
                 if(obj2.transitions[i][j]!='\0'){
@@ -224,6 +224,16 @@ int main() {
         for (int i = 0; i < obj2.nombre_sorties; ++i) {
             printf("%d ",obj2.sortie[i]);
         }
+
+    printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+    char fich_dot[50];
+    scanf("%s",&fich_dot);
+
+//         EN UTILISANT UN AUTRE POINTEUR
+
+     ptr3= fopen(fich_dot,"w");
+//      en utilisant la fonction qui nous permet de cree un fichier.dot
+    creer_dot_fichier(obj2,ptr3);
     }
 
 //    PARTE 2 :
