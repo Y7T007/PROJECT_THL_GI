@@ -144,34 +144,78 @@ struct automates lire_fichier_texte(char rw,FILE *ptr){
     }
 }
 
-//  PARTIE 2222222222 :
-
+//  PARTIE 2 :
 struct automates test_mots(char mot[200], struct automates automates_1 ){
-    char etat_actif=automates_1.entree;
+    int etat_actif = automates_1.entree;
     int lettre=0;
-    for (int i = 0; i < automates_1.nombre_d_etat; ++i) {
-        if(automates_1.transitions[etat_actif][i]==mot[lettre]){
-            etat_actif=i;
-            lettre++;
-        }
-        for (int j = 0; j < automates_1.nombre_sorties; ++j) {
-            if(etat_actif==automates_1.sortie[j]){
-                printf("\nVOTRE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
-                break;
+    int complete=1;
+    while (complete==1){
+        complete=0;
+        for (int i = 0; i < automates_1.nombre_d_etat; ++i) {
+            if (automates_1.transitions[etat_actif][i] == mot[lettre]) {
+                etat_actif = i;
+                complete=1;
+                lettre++;
             }
+            for (int j = 0; j < automates_1.nombre_sorties; ++j) {
+                if (etat_actif == automates_1.sortie[j]) {
+                    printf("\nVOTRE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
+                    complete=2;
+                    break;
+                }
+            }
+        }
+        if(complete==0){
+            printf("\nVOTRE MOT N'EST PAS VALIDE :( ");
+            break;
         }
     }
 }
+//char** importer_liste_mots(FILE *ptr){
+//    if(!ptr){
+//        printf("\n Unable to open  \n");
+//    }
+//
+//    char line[500];
+//    char data[2000][500];
+//    int j=0;
+//    int line_max;
+//    while (fgets(line,line_max = sizeof(line), ptr)) {
+//
+//        for (int i = 0;line[i]!='\0' ; ++i) {
+//            printf("\nim inside for of function, actual char is : %c", line[i]);
+//            data[j][i]=line[i];
+//        }
+//        j++;
+//    }
+//    char **temp
+//    for (int i = 0; i < 4; ++i) {
+//        *temp=
+//    }
+//    for (int i = 0; i < 4; ++i) {
+//        printf("%s",(*temp)+i);
+//    }
+//    return temp;
+//}
+//struct automates verifier_mots_du_fichiers(char data[2000][500],struct automates automates_1){
+//    for (int i = 0; data[i]!='\0'; ++i) {
+//        printf("\nLe mot a tester est : %s",data[i]);
+//        test_mots(data[i],automates_1);
+//        printf("\n");
+//    }
+//}
 
 
 int main() {
 //    ON COMMENCE PAR SALUTAION ET ON DEMANDE A L'UTILISATEUR POUR CHOISIR L'ACTION QU'IL SOUHAITE
-    printf("BONJOUR,\nVOULEZ VOUS CREER UN NOUVEAU AUTOMATE (n) OU CHARGER UN EXISTANT (o) :\n\n (n/o) ? :");
     char reponse;
+    do {
+    printf("BONJOUR,\nVOULEZ VOUS CREER UN NOUVEAU AUTOMATE (n) OU CHARGER UN EXISTANT (o) :\n\n (n/o) ? :");
     scanf("%c",&reponse);
+    } while (reponse!='n' && reponse!='N'&& reponse!='o' && reponse!='O');
 
 //       SI L'USER VEUT CREER UN NOUVEAU FICHIER DONC ON PROCEDE PAR LA CONDITION SUIVANTE
-    if(reponse=='n'){
+    if(reponse=='n' ||reponse=='N'){
 
 //        ON CREE NOTRE AUTOMATE EN CREANT UN OBJET QUI EST CONFORME A LA STRUCTURE QU'ON A DECLARE
         struct automates obj1;
@@ -201,28 +245,28 @@ int main() {
 //      en utilisant la fonction qui nous permet de cree un fichier.dot
         creer_dot_fichier(obj1,ptr1);
     }
-    if(reponse=='o'){
+    if(reponse=='o' || reponse=='O'){
         printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT L\'AUTOMATE : ");
         char chemin[70];
         scanf("%s",&chemin);
-        struct automates obj2;
+        struct automates obj1;
 
         FILE *ptr3;
         ptr3 = fopen( chemin,"r");
-        obj2= lire_fichier_texte('r',ptr3);
+        obj1= lire_fichier_texte('r',ptr3);
 
-        creer_fichier_texte( 'r',obj2,ptr3);
+        creer_fichier_texte( 'r',obj1,ptr3);
         printf("\n\nL'OUVERTURE DU FICHIER A REUSSI AVEC SUCCES\n");
-        for (int i = 0; i < obj2.nombre_d_etat; ++i) {
-            for (int j = 0; j < obj2.nombre_d_etat; ++j) {
-                if(obj2.transitions[i][j]!='\0'){
-                    printf("\n %d---%c-->%d",j,obj2.transitions[i][j],i);
+        for (int i = 0; i < obj1.nombre_d_etat; ++i) {
+            for (int j = 0; j < obj1.nombre_d_etat; ++j) {
+                if(obj1.transitions[i][j]!='\0'){
+                    printf("\n %d---%c-->%d",j,obj1.transitions[i][j],i);
                 }
             }
         }
         printf("\nLes sortie sont :");
-        for (int i = 0; i < obj2.nombre_sorties; ++i) {
-            printf("%d ",obj2.sortie[i]);
+        for (int i = 0; i < obj1.nombre_sorties; ++i) {
+            printf("%d ",obj1.sortie[i]);
         }
 
     printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
@@ -233,15 +277,37 @@ int main() {
 
      ptr3= fopen(fich_dot,"w");
 //      en utilisant la fonction qui nous permet de cree un fichier.dot
-    creer_dot_fichier(obj2,ptr3);
-    }
+    creer_dot_fichier(obj1,ptr3);
+
 
 //    PARTE 2 :
 
     printf("VEUILLEZ ENTREZ VOTRE MOT : ");
     char mot[100];
     scanf("%s",mot);
-    printf("%s",mot);
+    test_mots(mot,obj1);
+//    IMPORTER LISTE DES MOTS
 
+//    printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT LA LISTE DES MOTS (CHAQUE MOT DANS UNE LIGNE) : ");
+//    char chemin_mots[70];
+//    scanf("%s",&chemin_mots);
+//
+//    FILE *ptr4;
+//    ptr4 = fopen( chemin_mots,"r");
+//    importer_liste_mots(ptr4);
+//
+//    char **list= importer_liste_mots(ptr4);
+//
+//        for (int i = 0; i < 3; ++i) {
+//            printf("\n%s",((*list)+i) );
+//        }
+//    verifier_mots_du_fichiers(importer_liste_mots(ptr4),obj1);
+
+
+
+
+
+
+    }
     return 0;
 }
