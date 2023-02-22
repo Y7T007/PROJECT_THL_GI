@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "stdlib.h"
 
-
+//     PARTIE 1 :
 
 struct automates{
     int nombre_d_etat;
@@ -10,7 +10,6 @@ struct automates{
     int sortie[50];
     char transitions[100][100];
     int etats[100];
-
 };
 
 struct automates remplissage_automate(){
@@ -46,7 +45,6 @@ struct automates remplissage_automate(){
         }
     }
     return automate_1;
-
 }
 void creer_dot_fichier(struct automates automates_1,FILE *ptr){
 
@@ -131,26 +129,29 @@ struct automates lire_fichier_texte(FILE *ptr){
 
 
         for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
-            automate_1.etats[i] = (data[i][2]-48) ;
+            automate_1.etats[i] = i ;
         }
 
         automate_1.entree=data[j-2][0]-48;
 
-        automate_1.nombre_sorties=(data[j-1][0]-48);
+        automate_1.nombre_sorties=0;
         for (int i = 0; i < data[j-1][i]!='\0'; ++i) {
             automate_1.sortie[i]=((data[j-1][(i*2)])-48);
+            automate_1.nombre_sorties++;
         }
+        automate_1.nombre_sorties=(int)((automate_1.nombre_sorties+1)/2);
+
         fclose(ptr);
         return automate_1;
 }
 
-//  PARTIE 2 :
+//   PARTIE 2 :
 
 void test_mots(char mot[200], struct automates automates_1 ){
     int etat_actif = automates_1.entree;
     int lettre=0;
     int complete=1;
-    while (complete==1){
+    while (complete==1 && ((mot[lettre]>=97) && (mot[lettre]<= 122)) ){
         complete=0;
         for (int i = 0; i < automates_1.nombre_d_etat; ++i) {
             if (automates_1.transitions[etat_actif][i] == mot[lettre]) {
@@ -163,17 +164,20 @@ void test_mots(char mot[200], struct automates automates_1 ){
                 complete=0;
             }
         }
+        if(complete==0){
+            break;
+        }
         for (int j = 0; j < automates_1.nombre_sorties; ++j) {
+//            printf("\nsortie %d : %d , etat actif %d, lettre a tester : %c",j,automates_1.sortie[j],etat_actif,mot[lettre-1]);
             if ((etat_actif == automates_1.sortie[j]) && (mot[lettre]=='\0')) {
                 printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
                 complete=2;
                 break;
             }
         }
-        if(complete==0){
-            printf("\nCE MOT N'EST PAS VALIDE :( ");
-            break;
-        }
+    }
+    if(complete!=2){
+        printf("\nCE MOT N'EST PAS VALIDE :( ");
     }
 }
 char** importer_liste_mots(FILE *ptr){
@@ -217,7 +221,7 @@ int main() {
         struct automates obj1;
 
 //        LA VARIABLE QUI CONTIENT LE NOM DU FICHIER.TXT
-        printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER TEXTE POUR STOCKER VOTRE AUTOMATE : ");
+        printf("\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER TEXTE POUR STOCKER VOTRE AUTOMATE : ");
         char chemin_r[50];
         scanf("%s",&chemin_r);
 
@@ -231,7 +235,7 @@ int main() {
 //        ENSUITE EN UTILISANT CETTE FONCTION QUI ECRIT NOTRE AUTOMATE SUR LE FICHIER.TXT
         creer_fichier_texte(obj1,ptr2);
 //         DE MEME ON PROCEDE POUR LA CREATION DU FICHIER .DOT
-        printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+        printf("\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
         char fich_dot[50];
         scanf("%s",&fich_dot);
 
@@ -260,12 +264,19 @@ int main() {
                 }
             }
         }
+        printf("\n L'entree est : %d ",obj1.entree);
+
+        printf("\nLes etats sont :");
+        for (int i = 0; i < obj1.nombre_d_etat; ++i) {
+            printf("\nL'etat %d est %d",i,obj1.etats[i]);
+        }
+
         printf("\nLes sortie sont :");
         for (int i = 0; i < obj1.nombre_sorties; ++i) {
             printf("%d ",obj1.sortie[i]);
         }
 
-    printf("VEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+    printf("\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
     char fich_dot[50];
     scanf("%s",&fich_dot);
 
@@ -290,7 +301,7 @@ int main() {
 
 //    TESTER TOUS LES MOTS DU FICHIER
     for (int i = 0; list_mots[i]; ++i) {
-        printf("\n\nLE MOT A TESTER EST : %s ",list_mots[i]);
+        printf("\n\nLe mot a tester est : %s ",list_mots[i]);
         test_mots(list_mots[i],obj1);
     }
 
