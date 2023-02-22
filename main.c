@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include "stdlib.h"
-#include "math.h"
+
 
 
 struct automates{
@@ -48,7 +48,7 @@ struct automates remplissage_automate(){
     return automate_1;
 
 }
-struct automates creer_dot_fichier(struct automates automates_1,FILE *ptr){
+void creer_dot_fichier(struct automates automates_1,FILE *ptr){
 
     fprintf(ptr,"digraph test_graph{\ne[ label=\"ENTREE\" shape=none]\n"
                 "s[ label=\"SORTIE\" shape=none]");
@@ -81,7 +81,7 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
         }
     }
 
-    fprintf(ptr,"%d\n%d ",automate_1.entree,automate_1.nombre_sorties);
+    fprintf(ptr,"%d\n ",automate_1.entree);
         for (int i = 0; i < automate_1.nombre_sorties; ++i) {
             fprintf(ptr,"%d ",automate_1.sortie[i]);
 
@@ -113,9 +113,9 @@ struct automates lire_fichier_texte(FILE *ptr){
             for (int i = 0;line[i]!='\0' ; ++i) {
                 data[j][i]=line[i];
 
-                for (int i = 1; i <line_max ; ++i) {
-                    if(automate_1.nombre_d_etat<(data[i][0]-48)){
-                        automate_1.nombre_d_etat=(data[i][0]-48);
+                for (int j = 1; j <line_max ; ++j) {
+                    if(automate_1.nombre_d_etat<(data[j][0]-48)){
+                        automate_1.nombre_d_etat=(data[j][0]-48);
                         printf("%d",automate_1.nombre_d_etat);
                     }
                 }
@@ -134,11 +134,11 @@ struct automates lire_fichier_texte(FILE *ptr){
             automate_1.etats[i] = (data[i][2]-48) ;
         }
 
-
         automate_1.entree=data[j-2][0]-48;
+
         automate_1.nombre_sorties=(data[j-1][0]-48);
-        for (int i = 0; i < automate_1.nombre_sorties ; ++i) {
-            automate_1.sortie[i]=((data[j-1][2+(i*2)])-48);
+        for (int i = 0; i < data[j-1][i]!='\0'; ++i) {
+            automate_1.sortie[i]=((data[j-1][(i*2)])-48);
         }
         fclose(ptr);
         return automate_1;
@@ -146,7 +146,7 @@ struct automates lire_fichier_texte(FILE *ptr){
 
 //  PARTIE 2 :
 
-struct automates test_mots(char mot[200], struct automates automates_1 ){
+void test_mots(char mot[200], struct automates automates_1 ){
     int etat_actif = automates_1.entree;
     int lettre=0;
     int complete=1;
@@ -185,9 +185,8 @@ char** importer_liste_mots(FILE *ptr){
 
     char line[500];
     int j=0;
-    int line_max;
 
-    while (fgets(line,line_max = sizeof(line), ptr)) {
+    while (fgets(line,sizeof(line), ptr)) {
         data[j]=(char*) malloc(500* sizeof(char));
 
         for (int i = 0; line[i]!='\0' ; ++i) {
