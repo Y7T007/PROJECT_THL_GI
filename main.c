@@ -167,6 +167,7 @@ struct automates test_mots(char mot[200], struct automates automates_1 ){
                 }
             }
         }
+
         if(complete==0){
             printf("\nCE MOT N'EST PAS VALIDE :( ");
             break;
