@@ -1,0 +1,29 @@
+[33mcommit 0f97f2b34be7c8adb428bdf0e1f1211d56858a3d[m[33m ([m[1;36mHEAD -> [m[1;32mPARTIE_2_TESTING[m[33m, [m[1;31morigin/PARTIE_2_TESTING[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: Y7T007 <120678919+Y7T007@users.noreply.github.com>
+Date:   Wed Feb 22 11:18:58 2023 +0100
+
+    MAIN.C DUBUGGING
+
+[33mcommit ba5f39c8556398520b74b9625ae088b3ab2c4a3c[m
+Author: Y7T007 <120678919+Y7T007@users.noreply.github.com>
+Date:   Wed Feb 22 10:33:08 2023 +0100
+
+    PARTIE 2: ALL BUGS FIXED (except if text file doesnt contain new line at the end )
+
+[33mcommit 39d151572eafb15fb508d36daf112af4fd51619c[m
+Author: Y7T007 <120678919+Y7T007@users.noreply.github.com>
+Date:   Tue Feb 21 20:43:12 2023 +0100
+
+    Partie 2 : testing words work greaaaaat
+
+[33mcommit d3b64191fceae94654f283de320bc369f66de0ce[m
+Author: Y7T007 <120678919+Y7T007@users.noreply.github.com>
+Date:   Tue Feb 21 19:03:51 2023 +0100
+
+    FUNCTION TO CHECK WORD CONCEPTION AND DEBUGGING
+
+[33mcommit 60ea1e2dfe8c4a7e0ad34413d39f77c833b6b3bd[m
+Author: Y7T007 <120678919+Y7T007@users.noreply.github.com>
+Date:   Tue Feb 21 18:56:07 2023 +0100
+
+    FIRST COMMIT

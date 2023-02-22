@@ -65,7 +65,7 @@ struct automates creer_dot_fichier(struct automates automates_1,FILE *ptr){
                     fprintf(ptr, "\n%d -> s ;",automates_1.etats[i]);
 
                 }
-                if(automates_1.transitions[i][j]!='-'){
+                if((automates_1.transitions[i][j]!='-') && (automates_1.transitions[i][j]!='\0')){
                     fprintf(ptr, "\n%d -> %d [label=\"%c\" color=grey81 ] ",i,j,automates_1.transitions[i][j]);
                 }
             }
@@ -107,32 +107,32 @@ struct automates lire_fichier_texte(FILE *ptr){
         char data[500][500];
         int j=0;
         int line_max;
+        automate_1.nombre_d_etat=0;
 
         while (fgets(line,line_max = sizeof(line), ptr)) {
             for (int i = 0;line[i]!='\0' ; ++i) {
                 data[j][i]=line[i];
+
+                for (int i = 1; i <line_max ; ++i) {
+                    if(automate_1.nombre_d_etat<(data[i][0]-48)){
+                        automate_1.nombre_d_etat=(data[i][0]-48);
+                        printf("%d",automate_1.nombre_d_etat);
+                    }
+                }
             }
             j++;
         }
-        int temp;
         for (int i = 0; i<j-2 ; ++i) {
             if(((data[i][4])>=97 && (data[i][4])<=122)|| (data[i][4])==45  ){
                 automate_1.transitions[data[i][0]-48][data[i][2]-48]=(data[i][4]);
-
             }
         }
-        if(sizeof(automate_1.transitions)>automate_1.transitions[0]){
-            automate_1.nombre_d_etat=sizeof(automate_1.transitions);
-            printf(" longeur x : %d",sizeof(automate_1.transitions));
-        }else{
-            automate_1.nombre_d_etat=sizeof(automate_1.transitions[0]);
-            printf(" longeur y : %d",sizeof(automate_1.transitions[0]));
-        }
-        automate_1.nombre_d_etat= (int)sqrt(j) ;
+        automate_1.nombre_d_etat++;
+
+
         for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
             automate_1.etats[i] = (data[i][2]-48) ;
         }
-
 
 
         automate_1.entree=data[j-2][0]-48;
@@ -157,14 +157,17 @@ struct automates test_mots(char mot[200], struct automates automates_1 ){
                 etat_actif = i;
                 complete=1;
                 lettre++;
-                for (int j = 0; j < automates_1.nombre_sorties; ++j) {
-                        printf("\n+etat actif : %d, sortie : %d, mot : %c",etat_actif,automates_1.sortie[j],automates_1.transitions[etat_actif][i]);
-                    if (etat_actif == automates_1.sortie[j]) {
-                        printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
-                        complete=2;
-                        break;
-                    }
-                }
+                break;
+            }
+            else{
+                complete=0;
+            }
+        }
+        for (int j = 0; j < automates_1.nombre_sorties; ++j) {
+            if ((etat_actif == automates_1.sortie[j]) && (mot[lettre]=='\0')) {
+                printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
+                complete=2;
+                break;
             }
         }
         if(complete==0){
@@ -272,7 +275,6 @@ int main() {
      ptr3= fopen(fich_dot,"w");
 //      en utilisant la fonction qui nous permet de cree un fichier.dot
     creer_dot_fichier(obj1,ptr3);
-
 
 //    PARTE 2 :
 
