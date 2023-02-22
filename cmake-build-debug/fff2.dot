@@ -3,8 +3,7 @@ e[ label="ENTREE" shape=none]
 s[ label="SORTIE" shape=none]
 0 [label="0"]
 1 [label="1"]
-2 [label="2"]
-3 [label="3"];
+2 [label="2"];
 e -> 0  ;
 0 -> 0 [label="a" color=grey81 ] 
 0 -> 1 [label="b" color=grey81 ] 
@@ -12,10 +11,6 @@ e -> 0  ;
 1 -> 0 [label="j" color=grey81 ] 
 1 -> 1 [label="f" color=grey81 ] 
 1 -> 2 [label="g" color=grey81 ] 
-1 -> 3 [label="j" color=grey81 ] 
 2 -> s ;
 2 -> 1 [label="m" color=grey81 ] 
-2 -> 2 [label="r" color=grey81 ] 
-3 -> s ;
-3 -> 1 [label="k" color=grey81 ] 
-3 -> 2 [label="a" color=grey81 ] }
+2 -> 2 [label="r" color=grey81 ] }
