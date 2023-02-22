@@ -200,7 +200,6 @@ char** importer_liste_mots(FILE *ptr){
     return data;
 }
 
-
 int main() {
 //    ON COMMENCE PAR SALUTAION ET ON DEMANDE A L'UTILISATEUR POUR CHOISIR L'ACTION QU'IL SOUHAITE
     char reponse;
