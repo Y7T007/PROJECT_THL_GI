@@ -9,7 +9,6 @@ struct automates{
     int sortie[50];
     char transitions[100][100];
     int etats[100];
-
 };
 
 struct automates remplissage_automate(){
@@ -45,7 +44,6 @@ struct automates remplissage_automate(){
         }
     }
     return automate_1;
-
 }
 struct automates creer_dot_fichier(struct automates automates_1,FILE *ptr){
 
