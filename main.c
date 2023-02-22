@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include "stdlib.h"
 #include "math.h"
 
 
@@ -159,51 +160,44 @@ struct automates test_mots(char mot[200], struct automates automates_1 ){
             }
             for (int j = 0; j < automates_1.nombre_sorties; ++j) {
                 if (etat_actif == automates_1.sortie[j]) {
-                    printf("\nVOTRE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
+                    printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
                     complete=2;
                     break;
                 }
             }
         }
         if(complete==0){
-            printf("\nVOTRE MOT N'EST PAS VALIDE :( ");
+            printf("\nCE MOT N'EST PAS VALIDE :( ");
             break;
         }
     }
 }
-//char** importer_liste_mots(FILE *ptr){
-//    if(!ptr){
-//        printf("\n Unable to open  \n");
-//    }
-//
-//    char line[500];
-//    char data[2000][500];
-//    int j=0;
-//    int line_max;
-//    while (fgets(line,line_max = sizeof(line), ptr)) {
-//
-//        for (int i = 0;line[i]!='\0' ; ++i) {
-//            printf("\nim inside for of function, actual char is : %c", line[i]);
-//            data[j][i]=line[i];
-//        }
-//        j++;
-//    }
-//    char **temp
-//    for (int i = 0; i < 4; ++i) {
-//        *temp=
-//    }
-//    for (int i = 0; i < 4; ++i) {
-//        printf("%s",(*temp)+i);
-//    }
-//    return temp;
-//}
-//struct automates verifier_mots_du_fichiers(char data[2000][500],struct automates automates_1){
-//    for (int i = 0; data[i]!='\0'; ++i) {
-//        printf("\nLe mot a tester est : %s",data[i]);
-//        test_mots(data[i],automates_1);
-//        printf("\n");
-//    }
-//}
+
+char** importer_liste_mots(FILE *ptr){
+    char** data=(char ** ) malloc(2000*sizeof(char*));
+
+    if(!ptr){
+        printf("\n Unable to open  \n");
+    }
+
+    char line[500];
+    int j=0;
+    int line_max;
+
+    while (fgets(line,line_max = sizeof(line), ptr)) {
+        data[j]=(char*) malloc(500* sizeof(char));
+
+        for (int i = 0; line[i]!='\0' ; ++i) {
+            if((line[i])>=97 && (line[i])<=122){
+                data[j][i]=line[i];
+            } else{
+                data[j][i]='\0';
+            }
+        }
+        j++;
+    }
+    return data;
+}
 
 
 int main() {
@@ -288,14 +282,19 @@ int main() {
     test_mots(mot,obj1);
 //    IMPORTER LISTE DES MOTS
 
-//    printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT LA LISTE DES MOTS (CHAQUE MOT DANS UNE LIGNE) : ");
-//    char chemin_mots[70];
-//    scanf("%s",&chemin_mots);
-//
-//    FILE *ptr4;
-//    ptr4 = fopen( chemin_mots,"r");
-//    importer_liste_mots(ptr4);
-//
+    printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT LA LISTE DES MOTS (CHAQUE MOT DANS UNE LIGNE) : ");
+    char chemin_mots[70];
+    scanf("%s",&chemin_mots);
+
+    FILE *ptr4;
+    ptr4 = fopen( chemin_mots,"r");
+    char **list_mots= importer_liste_mots(ptr4);
+
+    for (int i = 0; list_mots[i]; ++i) {
+        printf("\n\nLE MOT A TESTER EST : %s ",list_mots[i]);
+        test_mots(list_mots[i],obj1);
+    }
+
 //    char **list= importer_liste_mots(ptr4);
 //
 //        for (int i = 0; i < 3; ++i) {
