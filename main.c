@@ -15,6 +15,7 @@ struct automates{
 struct automates remplissage_automate(){
     struct automates automate_1;
 
+// INSERTIONS DE DONNEES DANS NOTRE STRUCTURE PAR LES INFOS SAISIS PAR L'UTILISATEUR
     printf("\nVeuillez saisir l'etat de depart :  ");
     scanf("%d",&automate_1.entree);
 
@@ -48,6 +49,10 @@ struct automates remplissage_automate(){
 }
 void creer_dot_fichier(struct automates automates_1,FILE *ptr){
 
+//    ON CONBINE LES DONNEES CONTENU DANS NOTRE STRUCTURE AVEC LA STRUCTURE DU FICHIERS .DOT
+
+//LE POINTEUR *PTR POINTE SUR LE FICHIER .DOT SUR LE QUEL ON STOCKERA NOTRE GRAPH
+
     fprintf(ptr,"digraph test_graph{\ne[ label=\"ENTREE\" shape=none]\n"
                 "s[ label=\"SORTIE\" shape=none]");
     for (int i = 0; i < (automates_1.nombre_d_etat ); ++i) {
@@ -72,6 +77,9 @@ void creer_dot_fichier(struct automates automates_1,FILE *ptr){
 }
 struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 
+
+//    ON TRADUIT LES DONNEES RELATIVES AUX TRANSITIONS A UN FICHIER TEXTE SELON LA STRUCTURE SUIVANTE :
+//ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
     for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
         for (int j = 0; j < automate_1.nombre_d_etat; ++j) {
             printf("\n%d %d %c",i,j,automate_1.transitions[i][j]);
@@ -95,50 +103,62 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 }
 struct automates lire_fichier_texte(FILE *ptr){
     struct automates automate_1;
-
+//    LES DONNEES RELATIVES AUX TRANSITIONS SONT STOCKER DANS UN FICHIER TEXTE SELON LA STRUCTURE SUIVANTE :
+//ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
 
         if(!ptr){
             printf("\n Unable to open  \n");
         }
-
+//LE TABLEAU LINE FAIT REFERANCE A CHAQUE LIGNE ECRITE DANS LE FICHIER TXT
         char line[500];
+//        DATA EST LE TABLEAU TEMPORAIRE DANS LEQUEL ON STOCKERA LES TRANSITIONS ET LES ETAT SIMULTANEMANT COMME SUIVANT:
+//ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
+
         char data[500][500];
+//        LA VARIABLE J SIGNIFIE LA LIGNE ACTUEL ET A LA FIN IL VAIT ETRE AUTOMATIQUEMENT LA VALEUR DES NOMBRES DE LIGNES EXISTANTES
         int j=0;
-        int line_max;
         automate_1.nombre_d_etat=0;
 
-        while (fgets(line,line_max = sizeof(line), ptr)) {
+//        CETTE BOUCLE WHILE NOUS PERMET DE SCANNER LES LIGNES A PARTIR DU FICHIER TEXTE JUSQU'ON A PLUS DE LIGNES QUI CONTIENNENT DES CHAR
+
+        while (fgets(line, sizeof(line), ptr)) {
             for (int i = 0;line[i]!='\0' ; ++i) {
                 data[j][i]=line[i];
 
-                for (int j = 1; j <line_max ; ++j) {
-                    if(automate_1.nombre_d_etat<(data[j][0]-48)){
-                        automate_1.nombre_d_etat=(data[j][0]-48);
+                for (int k = 1; k <sizeof(line); ++k) {
+                    if(automate_1.nombre_d_etat<(data[k][0]-48)){
+                        automate_1.nombre_d_etat=(data[k][0]-48);
                         printf("%d",automate_1.nombre_d_etat);
                     }
                 }
             }
+//CETTE INCREMENTATION NOUS PERMET DE CONTER COMBIEN EN A SCANNER DE LIGNES AINSI QU'IL NOUS PERMET DE SAISIR LES DONNEES DANS LA TABLE DATA DONS CA BONNE LIGNE
             j++;
         }
+//        LA COLONNE 0 CONTIENT LES ETATS DE DEPARTS
+//        LA COLONNE 0 CONTIENT LES ETATS D'ARRIVEES
         for (int i = 0; i<j-2 ; ++i) {
             if(((data[i][4])>=97 && (data[i][4])<=122)|| (data[i][4])==45  ){
                 automate_1.transitions[data[i][0]-48][data[i][2]-48]=(data[i][4]);
             }
         }
+//        ON INCREMENTE LE NOMBRE D'ETATS A CHAQUE FOIS QU'ON TROUVE UN NOUVEAU ETAT
         automate_1.nombre_d_etat++;
-
-
         for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
             automate_1.etats[i] = i ;
         }
-
+//;     AVANT DERNIERE LIGNE CONTIENT L ETAT D'ENTREE
+//      DANS NOTRE CAS C'EST J-2 EST NON PAS J-1 A CAUSE DE LA DERNIERE INCREMENTATION
         automate_1.entree=data[j-2][0]-48;
-
+//ON INITIALISE L'ETAT DE SORTIE ET ON COMMENCE A SCANNER CES ETATS EN INCREMENTANT LE NOMBRE DES SORTIES SIMULTANEMENT
         automate_1.nombre_sorties=0;
         for (int i = 0; i < data[j-1][i]!='\0'; ++i) {
             automate_1.sortie[i]=((data[j-1][(i*2)])-48);
             automate_1.nombre_sorties++;
         }
+//        LINCREMENTATION PRECEDENTE A INCREMENTER LES NOMBRES DE SORTIES AINSI QUE LES ESPACES QUI LES SEPARES
+//        DONC ON DIVISE LE NOMBRE D'ELEMENT SCANNEE PAR DEUX ET EN AJOUTE 1 AU CAS OUR LA VALEUR ENTIERE N'EST PAS EFFECTIVEMENT LE NOMBRE EXACTE
+
         automate_1.nombre_sorties=(int)((automate_1.nombre_sorties+1)/2);
 
         fclose(ptr);
@@ -148,13 +168,17 @@ struct automates lire_fichier_texte(FILE *ptr){
 //   PARTIE 2 :
 
 void test_mots(char mot[200], struct automates automates_1 ){
+//    INITIALISATION DES VARIABLES A PARTIR DE NOTRE AUTOMATE CREE PAR NOTRE STRUCTURE
     int etat_actif = automates_1.entree;
+//    LETTRE SIGNIFIE LA LETTRE ACTIF A TESTER DANS L ETAT ACTIF
     int lettre=0;
+//    COMPLETE NOUS PERMET DE SE SITUER ENTRE LORSQUE LE MOT EST VALIDE 2 OU REFUSE 0  OU EN COURS DE TRAITEMENT 1
     int complete=1;
     while (complete==1 && ((mot[lettre]>=97) && (mot[lettre]<= 122)) ){
         complete=0;
         for (int i = 0; i < automates_1.nombre_d_etat; ++i) {
             if (automates_1.transitions[etat_actif][i] == mot[lettre]) {
+//                L ETAT ACTIF PREND L ETAT QUI SUIT LA TRANSITION EQUIVALENTE A NOTRE LETTRE
                 etat_actif = i;
                 complete=1;
                 lettre++;
@@ -167,8 +191,11 @@ void test_mots(char mot[200], struct automates automates_1 ){
         if(complete==0){
             break;
         }
+
         for (int j = 0; j < automates_1.nombre_sorties; ++j) {
-//            printf("\nsortie %d : %d , etat actif %d, lettre a tester : %c",j,automates_1.sortie[j],etat_actif,mot[lettre-1]);
+//                        SI ON A LES DEUX CONDITIONS SUIVANTES ON ARRETE LA BOUCLE :
+//                                -ON A SCANNER TOUS LES LETTRES DU MOTS;
+//                                -TOUTES LES LETTRES SONT ACCEPTEES PART NOTRE AUTOMATE;
             if ((etat_actif == automates_1.sortie[j]) && (mot[lettre]=='\0')) {
                 printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
                 complete=2;
@@ -176,6 +203,7 @@ void test_mots(char mot[200], struct automates automates_1 ){
             }
         }
     }
+//    SI L AUTOMATE N'A PAS VALIDE LE MOTS , DONC IL SERA REJETEE
     if(complete!=2){
         printf("\nCE MOT N'EST PAS VALIDE :( ");
     }
@@ -186,13 +214,14 @@ char** importer_liste_mots(FILE *ptr){
     if(!ptr){
         printf("\n Unable to open  \n");
     }
+//LE TABLEAU LINE FAIT REFERANCE A CHAQUE LIGNE ECRITE DANS LE FICHIER TXT
 
     char line[500];
+//    ET J FAIT REFERENCE A LA LIGNE ACTIVE
     int j=0;
 
     while (fgets(line,sizeof(line), ptr)) {
         data[j]=(char*) malloc(500* sizeof(char));
-
         for (int i = 0; line[i]!='\0' ; ++i) {
             if((line[i])>=97 && (line[i])<=122){
                 data[j][i]=line[i];
@@ -282,7 +311,7 @@ int main() {
 
 //         EN UTILISANT UN AUTRE POINTEUR
 
-     ptr3= fopen(fich_dot,"w");
+    ptr3= fopen(fich_dot,"w");
 //      en utilisant la fonction qui nous permet de cree un fichier.dot
     creer_dot_fichier(obj1,ptr3);
 
@@ -304,15 +333,6 @@ int main() {
         printf("\n\nLe mot a tester est : %s ",list_mots[i]);
         test_mots(list_mots[i],obj1);
     }
-
-//    char **list= importer_liste_mots(ptr4);
-//
-//        for (int i = 0; i < 3; ++i) {
-//            printf("\n%s",((*list)+i) );
-//        }
-//    verifier_mots_du_fichiers(importer_liste_mots(ptr4),obj1);
-
-
 
 
 
