@@ -82,7 +82,6 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 //ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
     for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
         for (int j = 0; j < automate_1.nombre_d_etat; ++j) {
-            printf("\n%d %d %c",i,j,automate_1.transitions[i][j]);
             fprintf(ptr,"%d %d %c\n",i,j,automate_1.transitions[i][j]);
         }
     }
@@ -93,12 +92,6 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 
         }
 
-    for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
-        printf("\n");
-        for (int j = 0; j < automate_1.nombre_d_etat; ++j) {
-            printf("%c",automate_1.transitions[j][i]);
-        }
-    }
     return automate_1;
 }
 struct automates lire_fichier_texte(FILE *ptr){
@@ -107,7 +100,8 @@ struct automates lire_fichier_texte(FILE *ptr){
 //ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
 
         if(!ptr){
-            printf("\n Unable to open  \n");
+            printf("\n L'ouverture du fichier a echoue   \n");
+
         }
 //LE TABLEAU LINE FAIT REFERANCE A CHAQUE LIGNE ECRITE DANS LE FICHIER TXT
         char line[500];
@@ -170,10 +164,11 @@ struct automates lire_fichier_texte(FILE *ptr){
 void test_mots(char mot[200], struct automates automates_1 ){
 //    INITIALISATION DES VARIABLES A PARTIR DE NOTRE AUTOMATE CREE PAR NOTRE STRUCTURE
     int etat_actif = automates_1.entree;
-//    LETTRE SIGNIFIE LA LETTRE ACTIF A TESTER DANS L ETAT ACTIF
+//    "LETTRE" SIGNIFIE LA LETTRE DU MOT A TESTER DANS L ETAT ACTIF
     int lettre=0;
-//    COMPLETE NOUS PERMET DE SE SITUER ENTRE LORSQUE LE MOT EST VALIDE 2 OU REFUSE 0  OU EN COURS DE TRAITEMENT 1
+//    "COMPLETE" NOUS PERMET DE SE SITUER ENTRE LORSQUE LE MOT EST (VALIDE 2) OU (REFUSE 0)  OU (EN COURS DE TRAITEMENT 1)
     int complete=1;
+
     while (complete==1 && ((mot[lettre]>=97) && (mot[lettre]<= 122)) ){
         complete=0;
         for (int i = 0; i < automates_1.nombre_d_etat; ++i) {
@@ -195,7 +190,7 @@ void test_mots(char mot[200], struct automates automates_1 ){
         for (int j = 0; j < automates_1.nombre_sorties; ++j) {
 //                        SI ON A LES DEUX CONDITIONS SUIVANTES ON ARRETE LA BOUCLE :
 //                                -ON A SCANNER TOUS LES LETTRES DU MOTS;
-//                                -TOUTES LES LETTRES SONT ACCEPTEES PART NOTRE AUTOMATE;
+//                                -TOUTES LES LETTRES SONT ACCEPTEES PAR NOTRE AUTOMATE;
             if ((etat_actif == automates_1.sortie[j]) && (mot[lettre]=='\0')) {
                 printf("\nCE MOT A ETE VALIDE PAR CET AUTOMATE AVEC SUCCES. ");
                 complete=2;
@@ -209,10 +204,12 @@ void test_mots(char mot[200], struct automates automates_1 ){
     }
 }
 char** importer_liste_mots(FILE *ptr){
+
     char** data=(char ** ) malloc(2000*sizeof(char*));
 
     if(!ptr){
-        printf("\n Unable to open  \n");
+        printf("\n L'OUVERTURE DU FICHIER A ECHOUE \n");
+        return 1;
     }
 //LE TABLEAU LINE FAIT REFERANCE A CHAQUE LIGNE ECRITE DANS LE FICHIER TXT
 
@@ -264,7 +261,7 @@ int main() {
 //        ENSUITE EN UTILISANT CETTE FONCTION QUI ECRIT NOTRE AUTOMATE SUR LE FICHIER.TXT
         creer_fichier_texte(obj1,ptr2);
 //         DE MEME ON PROCEDE POUR LA CREATION DU FICHIER .DOT
-        printf("\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+        printf("\n\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
         char fich_dot[50];
         scanf("%s",&fich_dot);
 
@@ -305,7 +302,7 @@ int main() {
             printf("%d ",obj1.sortie[i]);
         }
 
-    printf("\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+    printf("\n\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
     char fich_dot[50];
     scanf("%s",&fich_dot);
 
@@ -332,11 +329,12 @@ int main() {
     for (int i = 0; list_mots[i]; ++i) {
         printf("\n\nLe mot a tester est : %s ",list_mots[i]);
         test_mots(list_mots[i],obj1);
-    }
-
-
-
 
     }
+    }
+    char quit;
+    printf(" \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour quitter entre clicquer sur entrer ");
+    scanf("%s",&quit);
+
     return 0;
 }
