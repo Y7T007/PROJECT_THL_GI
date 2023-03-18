@@ -234,6 +234,7 @@ char** importer_liste_mots(FILE *ptr){
     }
     return data;
 }
+
 //   PARTIE 3 :
 struct automates etoile_automate(struct automates automates01){
     struct automates etoile;
@@ -269,6 +270,54 @@ struct automates etoile_automate(struct automates automates01){
     etoile.sortie[0]=etoile.nombre_d_etat-1;
     return etoile;
 }
+struct automates union_deux_automates(struct automates a1,struct automates a2){
+    struct automates uni;
+    uni.entree=0;
+    uni.nombre_d_etat=a1.nombre_d_etat+a2.nombre_d_etat+6;
+
+    for (int i = 0; i <= uni.nombre_d_etat; ++i) {
+        uni.etats[i]=i;
+    }
+
+    uni.transitions[0][1]='e';
+    uni.transitions[0][2]='e';
+    uni.transitions[1][3]='e';
+    uni.transitions[2][a1.nombre_d_etat+3]='e';
+
+    for (int i = 0; i < a1.nombre_d_etat; ++i) {
+        for (int j = 0; j < a1.nombre_d_etat; ++j) {
+            uni.transitions[i+3][j+3]=a1.transitions[i][j];
+        }
+    }
+    for (int i = 0; i < a2.nombre_d_etat; ++i) {
+        for (int j = 0; j < a2.nombre_d_etat; ++j) {
+            uni.transitions[a1.nombre_d_etat+i+3][a1.nombre_d_etat+j+3]=a2.transitions[i][j];
+        }
+    }
+
+    for (int i = 0; i <= a1.nombre_d_etat; ++i) {
+        for (int j = 0; j <= a1.nombre_sorties; ++j) {
+            if(a1.etats[i]==a1.sortie[j]){
+                uni.transitions[i+3][uni.nombre_d_etat-3]= 'e';
+            }
+        }
+    }
+    for (int i = 0; i <= a2.nombre_d_etat; ++i) {
+        for (int j = 0; j <= a2.nombre_sorties; ++j) {
+            if(a2.etats[i]==a2.sortie[j]){
+                uni.transitions[a1.nombre_d_etat+i+3][uni.nombre_d_etat-2]= 'e';
+            }
+        }
+    }
+    uni.transitions[uni.nombre_d_etat-3][uni.nombre_d_etat-1]='e';
+    uni.transitions[uni.nombre_d_etat-2][uni.nombre_d_etat-1]='e';
+
+    uni.nombre_sorties=1;
+    uni.sortie[0]=uni.nombre_d_etat-1;
+    return uni;
+
+}
+
 
 int main() {
 //    ON COMMENCE PAR SALUTAION ET ON DEMANDE A L'UTILISATEUR POUR CHOISIR L'ACTION QU'IL SOUHAITE
@@ -372,14 +421,18 @@ int main() {
 
 //      PARTIE 3 :
 
+// FONCTION ETOILE :
 struct automates etoile= etoile_automate(obj1);
 FILE *ptr5= fopen("etoile.dot","w+");
         creer_dot_fichier(etoile,ptr5);
+//FUNCTION UNION :
+FILE *A1= fopen("ff2.txt","r+");
+FILE *A2= fopen("ff3.txt","r+");
+FILE *un= fopen("union.dot","w+");
+struct automates unio= union_deux_automates(lire_fichier_texte(A1), lire_fichier_texte(A2));
+        creer_dot_fichier(unio,un);
 
     }
-
-
-
 
     char quit;
     printf(" \n\n\nPour quitter entre clicquer sur entrer ");
