@@ -1,0 +1,38 @@
+
+
+|------------------------------------------------------------------- BONJOUR --------------------------------------------------------------------
+|
+|
+|
+|-------------INSTRUCTIONS POUR LE BON FONCTIONNEMENT DU PROGRAMME :-----------------------------------------------------------------------------
+|
+|	
+|	1) Tout les fichiers texte doivent etre stocker dans le dossier appeler "cmake-build-debug",ainsi que le fichier executable est dedant;
+|
+|	2) - Le fichier texte contenant l'automate doit etre structure comme suit:
+|		
+|		etat_depart etat_arriver transitions
+|   
+|	   - Les deux dernieres lignes du fichier texte doivent contenir l'entree et les sorties respectivement;
+|
+|	3) Le fichier contenant les mots a tester doit avoir chaque mot dans une ligne;
+|
+|	4) Pour pouvoir modifier le code, acceder au fichier main.c dans le meme dossier;
+|	
+|	5) Vous avez deja un fichier texte contenant automate appele "ff2.txt";
+|	
+|	6) Vous avez deja un fichier texte contenant une liste des mots pour tester appele "mots.txt";
+|
+|	7) Les codes des deux parties sont dependant en entier, les deux parties sont separees par des commentaires precisant chaque partie.
+|
+|------------------------------------------------------------------------------------------------------------------------------------------------
+|
+|Ce programme est realiser par :
+|
+|	- Yassir WAHID;
+|
+|	- Hayat ROUBAKHI;
+|
+|	- Wiam HAOUDI.
+|
+|________________________________________________________________________________________________________________________________________________
