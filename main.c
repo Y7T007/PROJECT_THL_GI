@@ -65,12 +65,15 @@ void creer_dot_fichier(struct automates automates_1,FILE *ptr){
                 fprintf(ptr, "\ne -> %d  ;",automates_1.etats[i]);
             }
             for (int j = 0; j < automates_1.nombre_d_etat; ++j) {
-                if((automates_1.sortie[j]==automates_1.etats[i])&&(automates_1.sortie[j]!=0)){
-                    fprintf(ptr, "\n%d -> s ;",automates_1.etats[i]);
-
-                }
-                if((automates_1.transitions[i][j]!='-') && (automates_1.transitions[i][j]!='\0')){
+                if((automates_1.transitions[i][j]!='-') && (automates_1.transitions[i][j]!='\0')&&(automates_1.transitions[i][j]!='e')){
                     fprintf(ptr, "\n%d -> %d [label=\"%c\" color=grey81 ] ",i,j,automates_1.transitions[i][j]);
+                } else if(automates_1.transitions[i][j]=='e'){
+                    fprintf(ptr, "\n%d -> %d [label=\"%c\" color=red ] ",i,j,automates_1.transitions[i][j]);
+                }
+            }
+            for (int j = 0; j < automates_1.nombre_sorties; ++j) {
+                if(automates_1.sortie[j]==automates_1.etats[i]){
+                    fprintf(ptr, "\n%d -> s ;",automates_1.etats[i]);
                 }
             }
         }
@@ -231,7 +234,41 @@ char** importer_liste_mots(FILE *ptr){
     }
     return data;
 }
+//   PARTIE 3 :
+struct automates etoile_automate(struct automates automates01){
+    struct automates etoile;
+    etoile.nombre_d_etat=automates01.nombre_d_etat+4;
+    for (int i = 0; i <= etoile.nombre_d_etat; ++i) {
+        etoile.etats[i]=i;
+    }
 
+    etoile.entree=0;
+
+    etoile.transitions[0][1]='e';
+    etoile.transitions[1][2]='e';
+    etoile.transitions[0][etoile.nombre_d_etat-1]='e';
+    etoile.transitions[etoile.nombre_d_etat-2][etoile.nombre_d_etat-1]='e';
+
+    for (int i = 0; i <= automates01.nombre_d_etat; ++i) {
+        for (int j = 0; j <= automates01.nombre_d_etat; ++j) {
+            printf("\ntransition[%d][%d] : %c ",i,j,automates01.transitions[i][j]);
+            etoile.transitions[i+2][j+2]=automates01.transitions[i][j];
+        }
+    }
+
+    for (int i = 0; i <= automates01.nombre_d_etat; ++i) {
+        for (int j = 0; j < automates01.nombre_sorties; ++j) {
+            if(automates01.etats[i]==automates01.sortie[j]){
+                etoile.transitions[i+2][etoile.nombre_d_etat-2]= 'e';
+            }
+        }
+    }
+    etoile.transitions[etoile.nombre_d_etat-2][1]='e';
+
+    etoile.nombre_sorties=1;
+    etoile.sortie[0]=etoile.nombre_d_etat-1;
+    return etoile;
+}
 
 int main() {
 //    ON COMMENCE PAR SALUTAION ET ON DEMANDE A L'UTILISATEUR POUR CHOISIR L'ACTION QU'IL SOUHAITE
@@ -275,11 +312,11 @@ int main() {
     if(reponse=='o' || reponse=='O'){
         printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT L\'AUTOMATE : ");
         char chemin[70];
-        scanf("%s",&chemin);
+//        scanf("%s",&chemin);
         struct automates obj1;
 
         FILE *ptr3;
-        ptr3 = fopen( chemin,"r");
+        ptr3 = fopen( "ff2.txt","r");
         obj1= lire_fichier_texte(ptr3);
 
         creer_fichier_texte( obj1,ptr3);
@@ -305,11 +342,11 @@ int main() {
 
     printf("\n\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
     char fich_dot[50];
-    scanf("%s",&fich_dot);
+//    scanf("%s",&fich_dot);
 
 //         EN UTILISANT UN AUTRE POINTEUR
 
-    ptr3= fopen(fich_dot,"w");
+    ptr3= fopen("ff2.dot","w");
 //      en utilisant la fonction qui nous permet de cree un fichier.dot
     creer_dot_fichier(obj1,ptr3);
 
@@ -319,11 +356,11 @@ int main() {
 
     printf("\nVEUIILLEZ INSERER SVP LE CHEMIN DE VOTRE FICHIER CONTENANT LA LISTE DES MOTS (CHAQUE MOT DANS UNE LIGNE) : ");
     char chemin_mots[70];
-    scanf("%s",&chemin_mots);
+//    scanf("%s",&chemin_mots);
 
 //    POINTEUR POINT SUR LE FICHIER
     FILE *ptr4;
-    ptr4 = fopen( chemin_mots,"r");
+    ptr4 = fopen( "mots.txt","r");
     char **list_mots= importer_liste_mots(ptr4);
 
 //    TESTER TOUS LES MOTS DU FICHIER
@@ -332,10 +369,23 @@ int main() {
         test_mots(list_mots[i],obj1);
 
     }
+
+//      PARTIE 3 :
+
+struct automates etoile= etoile_automate(obj1);
+FILE *ptr5= fopen("etoile.dot","w+");
+        creer_dot_fichier(etoile,ptr5);
+
     }
+
+
+
+
     char quit;
-    printf(" \n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour quitter entre clicquer sur entrer ");
+    printf(" \n\n\nPour quitter entre clicquer sur entrer ");
     scanf("%s",&quit);
+
+
 
     return 0;
 }
