@@ -45,6 +45,7 @@ struct automates remplissage_automate(){
             scanf("%s",&automate_1.transitions[i][j]);
         }
     }
+
     return automate_1;
 }
 void creer_dot_fichier(struct automates automates_1,FILE *ptr){
