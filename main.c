@@ -86,11 +86,13 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 //ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
     for (int i = 0; i < automate_1.nombre_d_etat; ++i) {
         for (int j = 0; j < automate_1.nombre_d_etat; ++j) {
+            if (automate_1.transitions[i][j]!='\0') {
             fprintf(ptr,"%d %d %c\n",i,j,automate_1.transitions[i][j]);
+            }
         }
     }
 
-    fprintf(ptr,"%d\n ",automate_1.entree);
+    fprintf(ptr,"%d\n",automate_1.entree);
         for (int i = 0; i < automate_1.nombre_sorties; ++i) {
             fprintf(ptr,"%d ",automate_1.sortie[i]);
 
@@ -100,6 +102,12 @@ struct automates creer_fichier_texte(struct automates automate_1 ,FILE *ptr){
 }
 struct automates lire_fichier_texte(FILE *ptr){
     struct automates automate_1;
+    for (int i = 0; i < 50; ++i) {
+        for (int j = 0; j < 50; ++j) {
+            automate_1.transitions[i][j]='\0';
+        }
+    }
+
 //    LES DONNEES RELATIVES AUX TRANSITIONS SONT STOCKER DANS UN FICHIER TEXTE SELON LA STRUCTURE SUIVANTE :
 //ETAT_DEPART   ETAT_ARRIVEE  TRANSITION
 
@@ -213,7 +221,6 @@ char** importer_liste_mots(FILE *ptr){
 
     if(!ptr){
         printf("\n L'OUVERTURE DU FICHIER A ECHOUE \n");
-        return 1;
     }
 //LE TABLEAU LINE FAIT REFERANCE A CHAQUE LIGNE ECRITE DANS LE FICHIER TXT
 
@@ -238,6 +245,11 @@ char** importer_liste_mots(FILE *ptr){
 //   PARTIE 3 :
 struct automates etoile_automate(struct automates automates01){
     struct automates etoile;
+    for (int i = 0; i < 50 ; ++i) {
+        for (int j = 0; j < 50; ++j) {
+        etoile.transitions[i][j]='\0';
+        }
+    }
     etoile.nombre_d_etat=automates01.nombre_d_etat+4;
     for (int i = 0; i <= etoile.nombre_d_etat; ++i) {
         etoile.etats[i]=i;
@@ -252,7 +264,6 @@ struct automates etoile_automate(struct automates automates01){
 
     for (int i = 0; i <= automates01.nombre_d_etat; ++i) {
         for (int j = 0; j <= automates01.nombre_d_etat; ++j) {
-            printf("\ntransition[%d][%d] : %c ",i,j,automates01.transitions[i][j]);
             etoile.transitions[i+2][j+2]=automates01.transitions[i][j];
         }
     }
@@ -268,10 +279,16 @@ struct automates etoile_automate(struct automates automates01){
 
     etoile.nombre_sorties=1;
     etoile.sortie[0]=etoile.nombre_d_etat-1;
+
     return etoile;
 }
 struct automates union_deux_automates(struct automates a1,struct automates a2){
     struct automates uni;
+    for (int i = 0; i < 50; ++i) {
+        for (int j = 0; j < 50; ++j) {
+            uni.transitions[i][j]='\0';
+        }
+    }
     uni.entree=0;
     uni.nombre_d_etat=a1.nombre_d_etat+a2.nombre_d_etat+6;
 
@@ -295,16 +312,17 @@ struct automates union_deux_automates(struct automates a1,struct automates a2){
         }
     }
 
-    for (int i = 0; i <= a1.nombre_d_etat; ++i) {
-        for (int j = 0; j <= a1.nombre_sorties; ++j) {
+    for (int i = 0; i < a1.nombre_d_etat; ++i) {
+        for (int j = 0; j < a1.nombre_sorties; ++j) {
             if(a1.etats[i]==a1.sortie[j]){
                 uni.transitions[i+3][uni.nombre_d_etat-3]= 'e';
             }
         }
     }
-    for (int i = 0; i <= a2.nombre_d_etat; ++i) {
-        for (int j = 0; j <= a2.nombre_sorties; ++j) {
-            if(a2.etats[i]==a2.sortie[j]){
+
+    for (int i =0; i < a2.nombre_d_etat; i++) {
+        for (int j = 0; j < a2.nombre_sorties; j++) {
+            if(a2.etats[i]==a2.sortie[j] &&a2.sortie[j]!=0 ){
                 uni.transitions[a1.nombre_d_etat+i+3][uni.nombre_d_etat-2]= 'e';
             }
         }
@@ -317,7 +335,80 @@ struct automates union_deux_automates(struct automates a1,struct automates a2){
     return uni;
 
 }
+struct automates produit_deux_automates(struct automates a1,struct automates a2){
+    struct automates pr;
+    pr.entree=0;
+    pr.nombre_sorties=0;
+    for (int i = 0; i < a1.nombre_sorties; ++i) {
+        for (int j = 0; j < a2.nombre_sorties; ++j) {
+            if(a1.sortie[i]==a2.sortie[j] && a1.sortie[i]!='\0'){
+                pr.sortie[pr.nombre_sorties]=a1.sortie[i];
+                pr.nombre_sorties++;
+            }
+        }
+    }
+    if(a1.nombre_d_etat<a2.nombre_d_etat){
+        pr.nombre_d_etat=a1.nombre_d_etat;
+    }
+    if(a1.nombre_d_etat>=a2.nombre_d_etat){
+        pr.nombre_d_etat=a2.nombre_d_etat;
+    }
+    for (int i = 0; i <= pr.nombre_d_etat; ++i) {
+        pr.etats[i]=i;
+    }
+    for (int m = 0; m <= pr.nombre_d_etat; ++m) {
+        for (int k = 0; k <= pr.nombre_d_etat; ++k) {
+            if((a1.transitions[k][m] == a2.transitions[k][m])&& (a2.transitions[k][m]>=97 && a2.transitions[k][m]<=122)){
+                pr.transitions[k][m]=a1.transitions[k][m];
+            }
+        }
+    }
 
+    return pr;
+}
+
+
+//  features
+
+//struct automates menu(){
+//    struct automates obj;
+//    int c=0;
+//    while (c==0){
+//        printf("Veuillez choisir votre prochaine fonction :\n\t1) Creer un automate;\n\t2) Lire un automate a partir d'un fichier\n\t3) Creer un fichier dot a partir d'un automate\n\t4) Tester un mot a partir de votre automate.\n\t5) Importer un liste de mot a tester.\n\t6) Fournir l'etoile d'un automate \n\t7) Fournir le produit de deux automates \n\t7) Fournir l'union de deux automates.\n(1\2\3\4\5\6\7)");
+//        scanf("%d",&c);
+//        switch (c) {
+//            case 1:
+//                obj=remplissage_automate();
+//                return obj;
+//                break;
+//            case 2:
+//                printf("\nVeuillez saisir le nom de fichier texte : ");
+//                char chemin[50];
+//                scanf("%s",chemin);
+//                FILE *ch= fopen(chemin,"r");
+//                lire_fichier_texte(ch);
+//                break;
+//            case 3:
+//                printf("\n\nVEUILLER SAISIR LE NOM DU NOUVEAU FICHIER DOT POUR STOCKER VOTRE AUTOMATE : ");
+//                char fich_dot[50];
+//                scanf("%s",&fich_dot);
+//                FILE *ch_dot= fopen(fich_dot,"r");
+//                ch= fopen("ff2.dot","w");
+//                creer_dot_fichier(obj,ch_dot);
+//                break;
+//            case 4:
+//                break;
+//            case 5:
+//                break;
+//            case 6:
+//                break;
+//            case 7:
+//                break;
+//        }
+//    }
+
+
+//}
 
 int main() {
 //    ON COMMENCE PAR SALUTAION ET ON DEMANDE A L'UTILISATEUR POUR CHOISIR L'ACTION QU'IL SOUHAITE
@@ -421,17 +512,40 @@ int main() {
 
 //      PARTIE 3 :
 
-// FONCTION ETOILE :
-struct automates etoile= etoile_automate(obj1);
-FILE *ptr5= fopen("etoile.dot","w+");
-        creer_dot_fichier(etoile,ptr5);
-//FUNCTION UNION :
-FILE *A1= fopen("ff2.txt","r+");
-FILE *A2= fopen("ff3.txt","r+");
-FILE *un= fopen("union.dot","w+");
-struct automates unio= union_deux_automates(lire_fichier_texte(A1), lire_fichier_texte(A2));
-        creer_dot_fichier(unio,un);
+//      FONCTION ETOILE :
+    struct automates etoile= etoile_automate(obj1);
+    FILE *ptr5= fopen("etoile.dot","w+");
+    creer_dot_fichier(etoile,ptr5);
 
+//      FUNCTION UNION :
+    FILE *A1= fopen("ff2.txt","r+");
+    FILE *A2= fopen("ff3.txt","r+");
+
+    struct automates unio= union_deux_automates(lire_fichier_texte(A1), lire_fichier_texte(A2));
+    FILE *un= fopen("union.dot","w+");
+    creer_dot_fichier(unio,un);
+
+
+//      FONCTION PRODUIT
+        FILE *a1= fopen("ff2.txt","a+");
+        FILE *a2= fopen("ff3.txt","a+");
+        struct automates a12= lire_fichier_texte(a1);
+        struct automates a32= lire_fichier_texte(a1);
+        struct automates a22= lire_fichier_texte(a2);
+    struct automates produit= produit_deux_automates(a12,a22);
+    FILE *pr= fopen("produit.dot","w+");
+    creer_dot_fichier(produit,pr);
+
+
+        //    CREER FICHIER TEXTE ETOILE:
+        FILE *F_ETOILE= fopen("etoile.txt","w+");
+        creer_fichier_texte(etoile,F_ETOILE);
+        //    CREER FICHIER TEXTE UNION:
+        FILE *F_UNION= fopen("union.txt","w+");
+        creer_fichier_texte(unio,F_UNION);
+        //    CREER FICHIER TEXTE PRODUIT:
+        FILE *F_PROD= fopen("PRODUIT.txt","w+");
+        creer_fichier_texte(produit,F_PROD);
     }
 
     char quit;

@@ -18,10 +18,11 @@ e -> 0  ;
 1 -> s ;
 2 -> 1 [label="m" color=grey81 ] 
 2 -> 2 [label="r" color=grey81 ] 
-2 -> s ;
+2 -> 3 [label="a" color=grey81 ] 
 3 -> 1 [label="r" color=grey81 ] 
 3 -> 2 [label="a" color=grey81 ] 
 3 -> 3 [label="i" color=grey81 ] 
+3 -> 4 [label="b" color=grey81 ] 
+3 -> s ;
 4 -> 0 [label="q" color=grey81 ] 
-4 -> 2 [label="f" color=grey81 ] 
-4 -> s ;}
+4 -> 2 [label="f" color=grey81 ] }
